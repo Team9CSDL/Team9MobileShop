@@ -457,19 +457,22 @@ ALTER TABLE `category`
 -- Chỉ mục cho bảng `comment`
 --
 ALTER TABLE `comment`
-  ADD PRIMARY KEY (`comm_id`);
+  ADD PRIMARY KEY (`comm_id`),
+  add constraint fk_prdid foreign key (prd_id) references product(prd_id);
 
 --
 -- Chỉ mục cho bảng `order_list`
 --
 ALTER TABLE `order_list`
-  ADD PRIMARY KEY (`ord_id`);
+  ADD PRIMARY KEY (`ord_id`),
+  add constraint fk_ordprdid foreign key (ord_prd_id) references product(prd_id);
 
 --
 -- Chỉ mục cho bảng `product`
 --
 ALTER TABLE `product`
-  ADD PRIMARY KEY (`prd_id`);
+  ADD PRIMARY KEY (`prd_id`),
+  add constraint fk_catid foreign key (cat_id) references category(cat_id);
 
 --
 -- Chỉ mục cho bảng `user`
