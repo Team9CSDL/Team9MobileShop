@@ -66,7 +66,7 @@
                     
                     $mail->CharSet = 'UTF-8';                                   // Tranh bi loi tieng viet khi gui mail
                     //Recipients
-                    $mail->setFrom('thaonguyentai93@gmail.com', 'BK Shop');
+                    $mail->setFrom('giangveal1998@gmail.com', 'BK Shop');
                     $mail->addAddress($email, $name);                            // Add a recipient
                     // Content
                     $mail->isHTML(true);                                         // Set email format to HTML
