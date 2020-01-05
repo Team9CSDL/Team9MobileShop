@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th12 15, 2019 lúc 12:56 PM
+-- Thời gian đã tạo: Th1 04, 2020 lúc 02:21 PM
 -- Phiên bản máy phục vụ: 10.4.10-MariaDB
 -- Phiên bản PHP: 7.3.12
 
@@ -19,7 +19,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Cơ sở dữ liệu: `dtb2`
+-- Cơ sở dữ liệu: `dtb9`
 --
 
 -- --------------------------------------------------------
@@ -102,28 +102,44 @@ INSERT INTO `comment` (`comm_id`, `prd_id`, `comm_name`, `comm_mail`, `comm_date
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `order_list`
+-- Cấu trúc bảng cho bảng `orders`
 --
 
-CREATE TABLE `order_list` (
-  `ord_id` int(11) NOT NULL,
-  `ord_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `ord_phone` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
-  `ord_address` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `ord_mail` int(50) NOT NULL,
-  `ord_date` datetime NOT NULL,
+CREATE TABLE `orders` (
+  `ID` int(11) NOT NULL,
+  `total` int(11) NOT NULL,
+  `customer_name` varchar(50) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `customer_phone` int(11) NOT NULL,
+  `customer_email` varchar(50) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `customer_address` varchar(50) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `status` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `order_details`
+--
+
+CREATE TABLE `order_details` (
+  `ID` int(11) NOT NULL,
+  `order_id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL,
+  `quantity` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `prd_price_audit`
+--
+
+CREATE TABLE `prd_price_audit` (
+  `ID` int(11) NOT NULL,
   `prd_id` int(11) NOT NULL,
-  `amount` int(50) NOT NULL,
-  `ord_status` int(1) NOT NULL,
-  `ord_total` double UNSIGNED NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
---
--- Đang đổ dữ liệu cho bảng `order_list`
---
-
-INSERT INTO `order_list` (`ord_id`, `ord_name`, `ord_phone`, `ord_address`, `ord_mail`, `ord_date`, `prd_id`, `amount`, `ord_status`, `ord_total`) VALUES
-(0, 'Nguyen Van Giang', '0326700006', 'Thành phố Bắc Ninh', 0, '2019-12-15 11:37:49', 0, 0, 1, 30000000);
+  `price_before` int(11) NOT NULL,
+  `price_after` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -201,7 +217,6 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`user_id`, `user_full`, `user_mail`, `user_pass`, `user_level`) VALUES
-(1, 'Vietpro Academy', 'vietpro.edu.vn@gmail.com', '123456', 1),
 (2, 'Administrator', 'admin@gmail.com', '123456', 1),
 (3, 'Nguyễn Van A', 'nguyenvana@gmail.com', '123456', 2),
 (4, 'Nguyễn Van B', 'nguyenvanb@gmail.com', '123456', 2),
@@ -224,20 +239,34 @@ ALTER TABLE `category`
 --
 ALTER TABLE `comment`
   ADD PRIMARY KEY (`comm_id`),
-  ADD KEY `fk_prdcmt` (`prd_id`);
+  ADD KEY `FK_comment` (`prd_id`);
 
 --
--- Chỉ mục cho bảng `order_list`
+-- Chỉ mục cho bảng `orders`
 --
-ALTER TABLE `order_list`
-  ADD PRIMARY KEY (`ord_id`);
+ALTER TABLE `orders`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Chỉ mục cho bảng `order_details`
+--
+ALTER TABLE `order_details`
+  ADD PRIMARY KEY (`ID`),
+  ADD KEY `FK_details` (`product_id`),
+  ADD KEY `FK_orders` (`order_id`);
+
+--
+-- Chỉ mục cho bảng `prd_price_audit`
+--
+ALTER TABLE `prd_price_audit`
+  ADD KEY `FK_editprice` (`prd_id`);
 
 --
 -- Chỉ mục cho bảng `product`
 --
 ALTER TABLE `product`
   ADD PRIMARY KEY (`prd_id`),
-  ADD KEY `fk_catid` (`cat_id`);
+  ADD KEY `FK_BRANDPRO` (`cat_id`);
 
 --
 -- Chỉ mục cho bảng `user`
@@ -279,25 +308,30 @@ ALTER TABLE `user`
 --
 
 --
--- Các ràng buộc cho các bảng đã đổ
---
-ALTER TABLE `order_list``
-  ADD CONSTRAINT `fk_prdorder` FOREIGN KEY (`prd_id`) REFERENCES `product` (`prd_id`);
-
---
 -- Các ràng buộc cho bảng `comment`
 --
 ALTER TABLE `comment`
-  ADD CONSTRAINT `fk_prdcmt` FOREIGN KEY (`prd_id`) REFERENCES `product` (`prd_id`);
+  ADD CONSTRAINT `FK_comment` FOREIGN KEY (`prd_id`) REFERENCES `product` (`prd_id`);
+
+--
+-- Các ràng buộc cho bảng `order_details`
+--
+ALTER TABLE `order_details`
+  ADD CONSTRAINT `FK_details` FOREIGN KEY (`product_id`) REFERENCES `product` (`prd_id`),
+  ADD CONSTRAINT `FK_orders` FOREIGN KEY (`order_id`) REFERENCES `orders` (`ID`);
+
+--
+-- Các ràng buộc cho bảng `prd_price_audit`
+--
+ALTER TABLE `prd_price_audit`
+  ADD CONSTRAINT `FK_editprice` FOREIGN KEY (`prd_id`) REFERENCES `product` (`prd_id`);
 
 --
 -- Các ràng buộc cho bảng `product`
 --
 ALTER TABLE `product`
-  ADD CONSTRAINT `fk_catid` FOREIGN KEY (`cat_id`) REFERENCES `category` (`cat_id`);
+  ADD CONSTRAINT `FK_BRANDPRO` FOREIGN KEY (`cat_id`) REFERENCES `category` (`cat_id`);
 COMMIT;
-
-
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
