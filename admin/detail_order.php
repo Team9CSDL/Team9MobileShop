@@ -14,7 +14,7 @@
             $cart1[$cart[sizeof($cart1)][0]] = $cart[sizeof($cart1)][1];
         }
         $list_id = implode(',', $list_id_arr);
-        $query_prd = mysqli_query($con, "SELECT * FROM product WHERE prd_id IN ($list_id)");
+        $query_prd =mysqli_query($con, "SELECT*FORM product WHERE prd_id IN ($list_id)");
     }
 ?>
 <div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">			
