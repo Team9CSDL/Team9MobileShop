@@ -30,6 +30,7 @@
             <h1><?php echo $cur_row['prd_name'];?></h1>
             <ul>
                 <li><span>Bảo hành:</span> <?php echo $cur_row['prd_warranty'];?></li>
+                <li><span>Thông số kỹ thuật:</span> <?php echo $cur_row['prd_spec'];?></li>
                 <li><span>Đi kèm:</span><?php echo $cur_row['prd_accessories'];?></li>
                 <li><span>Tình trạng:</span> <?php echo $cur_row['prd_new'];?></li>
                 <li><span>Khuyến Mại:</span> <?php echo $cur_row['prd_promotion'];?></li>
